@@ -54,7 +54,9 @@ app_license = "mit"
 
 # automatically create page for each record of this doctype
 # website_generators = ["Web Page"]
-
+domains = {
+    "Jolie" : "jolie_stores.domains.jolie"
+}
 # Jinja
 # ----------
 
@@ -133,23 +135,23 @@ app_license = "mit"
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"jolie_stores.tasks.all"
-# 	],
-# 	"daily": [
-# 		"jolie_stores.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"jolie_stores.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"jolie_stores.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"jolie_stores.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+	"10 * * * *": [
+		"jolie_stores.tasks.all"
+	],
+	# "daily": [
+	# 	"jolie_stores.tasks.daily"
+	# ],
+	# "hourly": [
+	# 	"jolie_stores.tasks.hourly"
+	# ],
+	# "weekly": [
+	# 	"jolie_stores.tasks.weekly"
+	# ],
+	# "monthly": [
+	# 	"jolie_stores.tasks.monthly"
+	# ],
+}
 
 # Testing
 # -------
