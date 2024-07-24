@@ -124,21 +124,20 @@ domains = {
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Sales Order": {
+		"before_submit": "jolie_stores.controllers.sales_order.submit_order",
+        "before_save" : "jolie_stores.controllers.sales_order.calculate_fees"
+	}
+}
 
 # Scheduled Tasks
 # ---------------
 
 scheduler_events = {
-	"10 * * * *": [
-		"jolie_stores.tasks.all"
-	],
+	# "10 * * * *": [
+	# 	"jolie_stores.tasks.all"
+	# ],
 	# "daily": [
 	# 	"jolie_stores.tasks.daily"
 	# ],

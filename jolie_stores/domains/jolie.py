@@ -21,5 +21,60 @@ data = {
                 "insert_after": "stock_uom",
             }
         ],
+    'Sales Order': [
+            {
+                "label": "User Details",
+                "fieldname": "user_details",
+                "fieldtype": "Tab Break",
+                "insert_after": "company_address_display",
+                "Collapsible" : 1
+            },
+            {
+                "label": "User Name",
+                "fieldname": "user_name",
+                "fieldtype": "Data",
+                "insert_after": "user_details",
+            },
+            {
+                "label": "User Phone",
+                "fieldname": "user_phone",
+                "fieldtype": "Data",
+                "insert_after": "user_name",
+            },
+            {
+                "label": "User Email",
+                "fieldname": "user_email",
+                "fieldtype": "Data",
+                "insert_after": "user_phone",
+                "options":"Email",
+            },
+            {
+                "label": "User Address",
+                "fieldname": "user_address",
+                "fieldtype": "Data",
+                "insert_after": "user_email",
+            },
+            {
+                "label": "City",
+                "fieldname": "city",
+                "fieldtype": "Link",
+                "insert_after": "user_address",
+                "options":"City",
+            },
+            {
+                "label": "Fees",
+                "fieldname": "fees",
+                "fieldtype": "Float",
+                "insert_after": "city",
+                "fetch_from":"city.fees", 
+                "read_only": 1
+            },
+            {
+                "label": "Date Time",
+                "fieldname": "date_time",
+                "fieldtype": "Datetime",
+                "insert_after": "transaction_date",
+            }
+        ],
     },
 }
