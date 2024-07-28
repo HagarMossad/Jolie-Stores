@@ -3,6 +3,7 @@ from frappe.utils import today
 from frappe.utils import now
 
 base_url = frappe.utils.get_url()
+port = "50"
 
 @frappe.whitelist(allow_guest=True)
 def create_carts(carts , user ):
@@ -175,7 +176,7 @@ def get_gallaries(gallary):
     image_data= frappe.db.sql(sql,as_dict=1)
      
     for image in image_data :
-        images.append(f"{base_url}:50"+image["image"])
+        images.append(f"{base_url}{port}"+image["image"])
     return images
 
     
@@ -261,7 +262,7 @@ def products(**args):
                         dict["category"] = product["category"]
                         dict["website_image"] = product["website_image"]
                         if product["website_image"] :
-                            dict["website_image"] = f"{base_url}:50"+product["website_image"]
+                            dict["website_image"] = f"{base_url}{port}"+product["website_image"]
                         dict["price"] = price
                         break
         else :
@@ -274,7 +275,7 @@ def products(**args):
                 dict["category"] = product["category"]
                 dict["website_image"] = product["website_image"]
                 if product["website_image"] :
-                    dict["website_image"] = f"{base_url}:50"+product["website_image"]
+                    dict["website_image"] = f"{base_url}{port}"+product["website_image"]
                 dict["price"] = price
         if dict :
             list.append(dict)
@@ -339,7 +340,7 @@ def get_product_details(item):
         dict["category_name"] = products[0]["category_name"]
         dict["website_image"] = products[0]["website_image"]
         if products[0]["website_image"] :
-            dict["website_image"] = f"{base_url}:50"+products[0]["website_image"]
+            dict["website_image"] = f"{base_url}{port}"+products[0]["website_image"]
         dict["gallary"] = products[0]["slideshow"] 
         if products[0]["slideshow"] :
                 dict["gallary"] = get_gallaries(products[0]["slideshow"] )
@@ -361,7 +362,7 @@ def get_product_details(item):
                     variant_dict = {}
                     variant_dict["image"] = variant["website_image"]
                     if variant["website_image"] : 
-                        variant_dict["image"] =f"{base_url}:50"+variant["website_image"]
+                        variant_dict["image"] =f"{base_url}{port}"+variant["website_image"]
                     variant_dict["price"] = price 
                     variant_dict["product_id"] = variant["product_id"]
                     variant_dict["stock"] = stock
