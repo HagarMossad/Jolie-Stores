@@ -1,9 +1,30 @@
 import frappe 
 from frappe.utils import today
 from frappe.utils import now
+from urllib.parse import urlparse
 
-base_url = frappe.utils.get_url()
-port = "50"
+def get_path(image):
+    # Get the base URL
+    base_url = frappe.utils.get_url()
+
+    # Parse the URL to extract components
+    parsed_url = urlparse(base_url)
+
+    # Extract the IP address or domain name
+    hostname = parsed_url.hostname
+
+    # Extract the port; if not specified, use the default port for the scheme
+    if parsed_url.port:
+        port = parsed_url.port
+    else:
+        port = 80 if parsed_url.scheme == 'http' else 443
+
+    # Reconstruct the URL with the IP and port
+    url_with_ip_and_port = f"{parsed_url.scheme}://{hostname}:{port}"+image
+    return url_with_ip_and_port
+    # base_url = frappe.utils.get_url()
+    # port = "50"
+    # return f"{base_url}:{port}"+image
 
 @frappe.whitelist(allow_guest=True)
 def create_carts(carts , user ):
@@ -176,7 +197,7 @@ def get_gallaries(gallary):
     image_data= frappe.db.sql(sql,as_dict=1)
      
     for image in image_data :
-        images.append(f"{base_url}:{port}"+image["image"])
+        images.append(get_path( image["image"]))
     return images
 
     
@@ -262,7 +283,7 @@ def products(**args):
                         dict["category"] = product["category"]
                         dict["website_image"] = product["website_image"]
                         if product["website_image"] :
-                            dict["website_image"] = f"{base_url}:{port}"+product["website_image"]
+                            dict["website_image"] = get_path( product["website_image"])
                         dict["price"] = price
                         break
         else :
@@ -275,7 +296,7 @@ def products(**args):
                 dict["category"] = product["category"]
                 dict["website_image"] = product["website_image"]
                 if product["website_image"] :
-                    dict["website_image"] = f"{base_url}:{port}"+product["website_image"]
+                    dict["website_image"] = get_path(product["website_image"])
                 dict["price"] = price
         if dict :
             list.append(dict)
@@ -340,7 +361,7 @@ def get_product_details(item):
         dict["category_name"] = products[0]["category_name"]
         dict["website_image"] = products[0]["website_image"]
         if products[0]["website_image"] :
-            dict["website_image"] = f"{base_url}:{port}"+products[0]["website_image"]
+            dict["website_image"] = get_path(products[0]["website_image"])
         dict["gallary"] = products[0]["slideshow"] 
         if products[0]["slideshow"] :
                 dict["gallary"] = get_gallaries(products[0]["slideshow"] )
@@ -362,7 +383,7 @@ def get_product_details(item):
                     variant_dict = {}
                     variant_dict["image"] = variant["website_image"]
                     if variant["website_image"] : 
-                        variant_dict["image"] =f"{base_url}:{port}"+variant["website_image"]
+                        variant_dict["image"] =get_path(variant["website_image"])
                     variant_dict["price"] = price 
                     variant_dict["product_id"] = variant["product_id"]
                     variant_dict["stock"] = stock

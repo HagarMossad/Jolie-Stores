@@ -1,8 +1,8 @@
 import frappe 
 from frappe import _
-from jolie_stores.api.products.item import products
-base_url = frappe.utils.get_url() 
-port = "50" 
+from jolie_stores.api.products.item import products , get_path
+# base_url = frappe.utils.get_url() 
+# port = "50" 
 
 @frappe.whitelist(allow_guest = True)
 def get_all_category(limit =None):
@@ -24,7 +24,7 @@ def get_all_category(limit =None):
         groups = frappe.db.sql(sql , as_dict = 1) 
         for group in groups:
             if group["image"]:
-                group["image"] = f"{base_url}:{port}"+group["image"]
+                group["image"] = get_path(group["image"])
         return groups
     except :
         frappe.local.response['http_status_code'] = 404 
@@ -67,7 +67,7 @@ def get_category_detailss(category):
         dict_list = {}
         dict_list["product_id"] = product["product_id"]
         if product["website_image"] :
-            dict_list["website_image"] = f"{base_url}:{port}"+product["website_image"]
+            dict_list["website_image"] = get_path(product["website_image"])
         else :
             dict_list["website_image"] = product["website_image"]
 
