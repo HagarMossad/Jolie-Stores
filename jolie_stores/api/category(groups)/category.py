@@ -1,22 +1,7 @@
 import frappe 
 from frappe import _
 from jolie_stores.api.products.item import products
-from urllib.parse import urlparse
-
-
-full_url = frappe.utils.get_url()
-
-# Parse the URL to extract components
-parsed_url = urlparse(full_url)
-
-# Extract the IP address or domain name
-hostname = parsed_url.hostname
-
-# Extract the port, defaulting to 80 for HTTP and 443 for HTTPS if not specified
-port = parsed_url.port or (80 if parsed_url.scheme == 'http' else 443)
-
-# Reconstruct the URL with the IP and port
-url_with_ip_and_port = f"{parsed_url.scheme}://{hostname}:{port}"
+base_url = frappe.utils.get_url() 
 
 @frappe.whitelist(allow_guest = True)
 def get_all_category(limit =None):
@@ -38,7 +23,7 @@ def get_all_category(limit =None):
         groups = frappe.db.sql(sql , as_dict = 1) 
         for group in groups:
             if group["image"]:
-                group["image"] = f"{url_with_ip_and_port}"+group["image"]
+                group["image"] = f"{base_url}:50"+group["image"]
         return groups
     except :
         frappe.local.response['http_status_code'] = 404 
@@ -81,7 +66,7 @@ def get_category_detailss(category):
         dict_list = {}
         dict_list["product_id"] = product["product_id"]
         if product["website_image"] :
-            dict_list["website_image"] = f"{url_with_ip_and_port}"+product["website_image"]
+            dict_list["website_image"] = f"{base_url}:50"+product["website_image"]
         else :
             dict_list["website_image"] = product["website_image"]
 
