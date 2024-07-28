@@ -1,7 +1,22 @@
 import frappe 
 from frappe.utils import today
 from frappe.utils import now
+from urllib.parse import urlparse
 
+
+full_url = frappe.utils.get_url()
+
+# Parse the URL to extract components
+parsed_url = urlparse(full_url)
+
+# Extract the IP address or domain name
+hostname = parsed_url.hostname
+
+# Extract the port, defaulting to 80 for HTTP and 443 for HTTPS if not specified
+port = parsed_url.port or (80 if parsed_url.scheme == 'http' else 443)
+
+# Reconstruct the URL with the IP and port
+url_with_ip_and_port = f"{parsed_url.scheme}://{hostname}:{port}"
 
 @frappe.whitelist(allow_guest=True)
 def create_carts(carts , user ):
@@ -79,7 +94,12 @@ def validate_carts(carts ):
             '''
         item_code = frappe.db.sql(sql, as_dict=1)
         if item_code :
-            cart["template_id"] = item_code[0]["variant_of"]
+            if item_code[0]["variant_of"] :
+                website_item_sql = f''' SELECT name from `tabWebsite Item` where item_code = '{item_code[0]["variant_of"]}' '''
+                website_item = frappe.db.sql(website_item_sql , as_dict = 1)
+                cart["template_id"] = website_item[0]["name"]
+            else :
+                cart["template_id"] = item_code[0]["name"]
             cart["product_id"] = item_code[0]["name"]
             cart["product_name"] = item_code[0]["product_name"]
             cart["category_id"] = item_code[0]["item_group"]
@@ -88,7 +108,7 @@ def validate_carts(carts ):
             price = get_item_price(item_code[0]["item_code"] , get_price_list()) 
             cart['qty'] = cart['qty']
             cart["stock"] = item_qty 
-            cart["price"] = price    
+            cart["price"] = price   
             list.append(cart)
         else :
             frappe.local.response['http_status_code'] = 404
@@ -167,10 +187,9 @@ def get_gallaries(gallary):
                 S.name = '{gallary}'
             '''
     image_data= frappe.db.sql(sql,as_dict=1)
-    base_url = frappe.utils.get_url()
      
     for image in image_data :
-        images.append(f"{base_url}"+image["image"])
+        images.append(f"{url_with_ip_and_port}"+image["image"])
     return images
 
     
@@ -232,7 +251,6 @@ def products(**args):
                 {conditions}
             '''
     products= frappe.db.sql(sql , as_dict = 1) 
-    base_url = frappe.utils.get_url()
     list = []
     for product in products :
         dict = {}
@@ -257,7 +275,7 @@ def products(**args):
                         dict["category"] = product["category"]
                         dict["website_image"] = product["website_image"]
                         if product["website_image"] :
-                            dict["website_image"] = f"{base_url}"+product["website_image"]
+                            dict["website_image"] = f"{url_with_ip_and_port}"+product["website_image"]
                         dict["price"] = price
                         break
         else :
@@ -270,7 +288,7 @@ def products(**args):
                 dict["category"] = product["category"]
                 dict["website_image"] = product["website_image"]
                 if product["website_image"] :
-                    dict["website_image"] = f"{base_url}"+product["website_image"]
+                    dict["website_image"] = f"{url_with_ip_and_port}"+product["website_image"]
                 dict["price"] = price
         if dict :
             list.append(dict)
@@ -327,7 +345,6 @@ def get_product_details(item):
                 i.name = '{item}'
         '''
         products = frappe.db.sql(sql, as_dict=1)
-        base_url = frappe.utils.get_url()
         dict = {}
         dict["template_id"] = products[0]["template_id"]
         dict["template_name"] = products[0]["template_name"]
@@ -336,7 +353,7 @@ def get_product_details(item):
         dict["category_name"] = products[0]["category_name"]
         dict["website_image"] = products[0]["website_image"]
         if products[0]["website_image"] :
-            dict["website_image"] = f"{base_url}"+products[0]["website_image"]
+            dict["website_image"] = f"{url_with_ip_and_port}"+products[0]["website_image"]
         dict["gallary"] = products[0]["slideshow"] 
         if products[0]["slideshow"] :
                 dict["gallary"] = get_gallaries(products[0]["slideshow"] )
@@ -358,7 +375,7 @@ def get_product_details(item):
                     variant_dict = {}
                     variant_dict["image"] = variant["website_image"]
                     if variant["website_image"] : 
-                        variant_dict["image"] =f"{base_url}"+variant["website_image"]
+                        variant_dict["image"] =f"{url_with_ip_and_port}"+variant["website_image"]
                     variant_dict["price"] = price 
                     variant_dict["product_id"] = variant["product_id"]
                     variant_dict["stock"] = stock

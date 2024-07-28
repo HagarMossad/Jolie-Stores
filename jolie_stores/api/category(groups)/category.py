@@ -1,7 +1,22 @@
 import frappe 
 from frappe import _
 from jolie_stores.api.products.item import products
+from urllib.parse import urlparse
 
+
+full_url = frappe.utils.get_url()
+
+# Parse the URL to extract components
+parsed_url = urlparse(full_url)
+
+# Extract the IP address or domain name
+hostname = parsed_url.hostname
+
+# Extract the port, defaulting to 80 for HTTP and 443 for HTTPS if not specified
+port = parsed_url.port or (80 if parsed_url.scheme == 'http' else 443)
+
+# Reconstruct the URL with the IP and port
+url_with_ip_and_port = f"{parsed_url.scheme}://{hostname}:{port}"
 
 @frappe.whitelist(allow_guest = True)
 def get_all_category(limit =None):
@@ -10,7 +25,6 @@ def get_all_category(limit =None):
         frappe.local.response['data'] = "Only GET method is allowed"
         return
     try :
-        base_url = frappe.utils.get_url() 
         condition = ""  
         if limit : 
             condition = f"limit {limit}" 
@@ -24,7 +38,7 @@ def get_all_category(limit =None):
         groups = frappe.db.sql(sql , as_dict = 1) 
         for group in groups:
             if group["image"]:
-                group["image"] = f"{base_url}"+group["image"]
+                group["image"] = f"{url_with_ip_and_port}"+group["image"]
         return groups
     except :
         frappe.local.response['http_status_code'] = 404 
@@ -37,7 +51,6 @@ def get_category_detailss(category):
         frappe.local.response['http_status_code'] = 404 
         frappe.local.response['data'] = "Only GET method is allowed"
         return
-    base_url = frappe.utils.get_url() 
     
     sql = f'''
             SELECT 
@@ -68,7 +81,7 @@ def get_category_detailss(category):
         dict_list = {}
         dict_list["product_id"] = product["product_id"]
         if product["website_image"] :
-            dict_list["website_image"] = f"{base_url}"+product["website_image"]
+            dict_list["website_image"] = f"{url_with_ip_and_port}"+product["website_image"]
         else :
             dict_list["website_image"] = product["website_image"]
 
@@ -89,10 +102,14 @@ def get_category_detailss(category):
 
 
 @frappe.whitelist(allow_guest = True)
-def get_category_details(category):
+def get_category_details(category = None):
     if frappe.local.request.method != "GET":
         frappe.local.response['http_status_code'] = 404 
         frappe.local.response['data'] = "Only GET method is allowed"
+        return
+    if not category :
+        frappe.local.response['http_status_code'] = 404 
+        frappe.local.response['data'] = "Define category"
         return
     all_products = products(category = category)
     dict = {}
