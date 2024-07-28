@@ -17,7 +17,7 @@ def get_path(image):
     if parsed_url.port:
         port = parsed_url.port
     else:
-        port = 80 if parsed_url.scheme == 'http' else 443
+        port = 50 if parsed_url.scheme == 'http' else 443
 
     # Reconstruct the URL with the IP and port
     url_with_ip_and_port = f"{parsed_url.scheme}://{hostname}:{port}"+image
