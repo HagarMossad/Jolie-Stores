@@ -132,6 +132,7 @@ def create_order(carts , user):
     sales_order.user_phone = user["phone"]
     sales_order.user_email = user["email"]
     sales_order.user_address = user["address"]
+    sales_order.city = user["city"]
     sales_order.delivery_date = today()
     sales_order.date_time = now()
     for cart in carts :
