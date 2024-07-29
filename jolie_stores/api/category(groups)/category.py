@@ -19,6 +19,8 @@ def get_all_category(limit =None):
                     name as category_id , item_group_name as category_name , image 
                 FROM
                     `tabItem Group`
+                where 
+                    name != 'All Item Groups'
                 {condition}
                 '''
         groups = frappe.db.sql(sql , as_dict = 1) 
