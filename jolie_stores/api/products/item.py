@@ -90,7 +90,7 @@ def validate_carts(carts ):
             return
         sql = f'''
                 SELECT 
-                   i.name , i.item_code , i.web_item_name as product_name , i.variant_of , i.item_group , g.item_group_name 
+                   i.name , i.item_code , i.web_item_name as product_name , i.variant_of , i.item_group , g.item_group_name , i.website_image
                 FROM
                     `tabWebsite Item` i
                 INNER JOIN 
@@ -103,13 +103,18 @@ def validate_carts(carts ):
         item_code = frappe.db.sql(sql, as_dict=1)
         if item_code :
             if item_code[0]["variant_of"] :
-                website_item_sql = f''' SELECT name from `tabWebsite Item` where item_code = '{item_code[0]["variant_of"]}' '''
+                website_item_sql = f''' SELECT name , web_item_name as template_name  from `tabWebsite Item` where item_code = '{item_code[0]["variant_of"]}' '''
                 website_item = frappe.db.sql(website_item_sql , as_dict = 1)
                 cart["template_id"] = website_item[0]["name"]
+                cart["product_name"] = website_item[0]["template_name"]
             else :
                 cart["template_id"] = item_code[0]["name"]
+                cart["product_name"] = item_code[0]["product_name"]
+
             cart["product_id"] = item_code[0]["name"]
-            cart["product_name"] = item_code[0]["product_name"]
+            cart["website_image"] = item_code[0]["website_image"]
+            if item_code[0]["website_image"] :
+                cart["website_image"] = get_path(item_code[0]["website_image"])
             cart["category_id"] = item_code[0]["item_group"]
             cart["category_name"] = item_code[0]["item_group_name"]
             item_qty = get_qty_bin(item_code[0]["item_code"] , get_warehouse())

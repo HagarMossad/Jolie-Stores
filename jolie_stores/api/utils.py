@@ -6,7 +6,7 @@ def city():
         frappe.local.response['http_status_code'] = 404 
         frappe.local.response['data'] = "Only GET method is allowed"
         return
-    city= frappe.db.sql('select city_name,fees from `tabCity`' , as_dict=1)
+    city= frappe.db.sql('select city_name,fees from `tabCity` order by id ' , as_dict=1)
     if city :
         return city
     else :
