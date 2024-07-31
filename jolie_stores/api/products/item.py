@@ -6,25 +6,11 @@ from urllib.parse import urlparse
 def get_path(image):
     # Get the base URL
     base_url = frappe.utils.get_url()
-
-    # Parse the URL to extract components
-    parsed_url = urlparse(base_url)
-
-    # Extract the IP address or domain name
-    hostname = parsed_url.hostname
-
-    # Extract the port; if not specified, use the default port for the scheme
-    if parsed_url.port:
-        port = parsed_url.port
-    else:
-        port = 8888 if parsed_url.scheme == 'http' else 443
-
-    # Reconstruct the URL with the IP and port
-    url_with_ip_and_port = f"{parsed_url.scheme}://{hostname}:{port}"+image
-    return url_with_ip_and_port
-    # base_url = frappe.utils.get_url()
-    # port = "50"
-    # return f"{base_url}:{port}"+image
+    site_config = frappe.get_site_config()
+    port = site_config.get('nginx_port')
+    url_with_port = f"{base_url}:{port}"
+    path_with_image = url_with_port+image
+    return path_with_image
 
 @frappe.whitelist(allow_guest=True)
 def create_carts(carts , user ):
