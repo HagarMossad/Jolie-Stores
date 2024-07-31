@@ -70,8 +70,10 @@ domains = {
 # ------------
 
 # before_install = "jolie_stores.install.before_install"
-# after_install = "jolie_stores.install.after_install"
-
+after_install = "jolie_stores.install.after_install"
+after_migrate = [
+    "jolie_stores.install.after_install",
+]
 # Uninstallation
 # ------------
 
