@@ -126,6 +126,8 @@ def create_order(carts , user):
     sales_order.city = user["city"]
     sales_order.delivery_date = today()
     sales_order.date_time = now()
+    sales_order.company = 'Jolie'
+    selling_settings = frappe.get_single("Selling Settings")
     for cart in carts :
         sql = f'''
                 SELECT 
@@ -136,7 +138,7 @@ def create_order(carts , user):
                     name ='{cart["id"]}'
             '''
         item_code = frappe.db.sql(sql, as_dict=1)
-        sales_order.append("items" , {"item_code" : item_code[0]['item_code'] , "qty" : cart['qty']})
+        sales_order.append("items" , {"item_code" : item_code[0]['item_code'] , "qty" : cart['qty'] , "warehouse" :selling_settings.default_warehouse})
     sales_order.save(ignore_permissions=True)
     # sales_order.submit()
 
