@@ -4,12 +4,8 @@ from frappe.utils import now
 from urllib.parse import urlparse
 
 def get_path(image):
-    # Get the base URL
-    base_url = frappe.utils.get_url()
-    site_config = frappe.get_site_config()
-    port = site_config.get('nginx_port')
-    url_with_port = f"{base_url}:{port}"
-    path_with_image = url_with_port+image
+    url = f"{frappe.utils.get_url()}"
+    path_with_image = url+image
     return path_with_image
 
 @frappe.whitelist(allow_guest=True)
