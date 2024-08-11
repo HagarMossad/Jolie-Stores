@@ -11,7 +11,7 @@ def submit_order(self , event):
     "notes": "note",
     "order_date": str(self.date_time),
     "shipment_contents": ' '.join([item.item_code for item in self.items]),
-    "weight": "50.00",
+    "weight": "0.5",
     "city": int(frappe.get_doc("City" , self.city).id)
     }
     token = get_token()["token"]
