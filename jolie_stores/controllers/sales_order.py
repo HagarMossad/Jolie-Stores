@@ -7,7 +7,7 @@ def submit_order(self , event):
     "full_name": self.user_name,
     "phone": self.user_phone,
     "address": self.user_address,
-    "total_amount": self.total,
+    "total_amount": self.total + self.fees,
     "notes": "note",
     "order_date": str(self.date_time),
     "shipment_contents": ' '.join([item.item_code for item in self.items]),
