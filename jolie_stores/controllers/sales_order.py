@@ -10,7 +10,7 @@ def submit_order(self , event):
     "total_amount": self.total + self.fees,
     "notes": "note",
     "order_date": str(self.date_time),
-    "shipment_contents": ' '.join([f'{item.item_code}x{item.qty} / ' for item in self.items])[:-1],
+    "shipment_contents": ' '.join([f'{item.item_code} x {item.qty} / ' for item in self.items])[:-2],
     "weight": "0.5",
     "reference_id" : self.name,
     "city": int(frappe.get_doc("City" , self.city).id),
