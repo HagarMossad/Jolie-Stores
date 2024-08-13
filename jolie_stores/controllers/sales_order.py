@@ -10,8 +10,9 @@ def submit_order(self , event):
     "total_amount": self.total + self.fees,
     "notes": "note",
     "order_date": str(self.date_time),
-    "shipment_contents": ' '.join([item.item_code for item in self.items]),
+    "shipment_contents": ' '.join([f'{item.item_code}x{item.qty} / ' for item in self.items])[:-1],
     "weight": "0.5",
+    "reference_id" : self.name,
     "city": int(frappe.get_doc("City" , self.city).id),
     "total_fees" : self.fees
     }
@@ -23,7 +24,6 @@ def submit_order(self , event):
         'Content-Type': 'application/json'
     }
     response = requests.post(url, json=data, headers=headers)
-    print(response)
     data = response.json()
 
 def calculate_fees(self , event):
