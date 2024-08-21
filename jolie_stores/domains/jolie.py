@@ -55,10 +55,16 @@ data = {
                 "insert_after": "user_email",
             },
             {
+                "label": "Notes",
+                "fieldname": "notes",
+                "fieldtype": "Text",
+                "insert_after": "user_address",
+            },
+            {
                 "label": "City",
                 "fieldname": "city",
                 "fieldtype": "Link",
-                "insert_after": "user_address",
+                "insert_after": "notes",
                 "options":"City",
             },
             {

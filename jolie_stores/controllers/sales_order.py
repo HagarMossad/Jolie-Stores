@@ -8,7 +8,7 @@ def submit_order(self , event):
     "phone": self.user_phone,
     "address": self.user_address,
     "total_amount": self.total + self.fees,
-    "notes": "note",
+    "notes": self.notes,
     "order_date": str(self.date_time),
     "shipment_contents": ' '.join([f'{item.item_code} x {item.qty} / ' for item in self.items])[:-2],
     "weight": "0.5",
