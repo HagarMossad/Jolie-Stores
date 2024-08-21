@@ -27,7 +27,7 @@ def get_data(filters):
 			and 
 			    {conditions}
             '''
-	data = frappe.db.sql(sql1 , as_dict = 1)
+	data = frappe.db.sql(sql , as_dict = 1)
 	return data
 
 
